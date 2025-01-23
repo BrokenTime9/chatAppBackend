@@ -35,11 +35,7 @@ const getMessages = async (req, res) => {
       .select("-_id content owner timestamp ")
       .populate("owner", "username");
 
-    if (messages.length == 0) {
-      return res.status(200).send("no messages on this chat yet");
-    }
-
-    res.status(200).json(messages);
+    res.status(200).json(messages || [{ content: "no messges yet" }]);
   } catch (err) {
     console.error(err);
     res.status(500).send("server error");
