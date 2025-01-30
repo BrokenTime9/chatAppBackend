@@ -1,15 +1,20 @@
 const express = require("express");
-const app = express();
+const http = require("http");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
+const { setupWebSocket } = require("./utils/websocket");
 const auth = require("./routes/authRoutes");
 const chat = require("./routes/chatRoutes");
 const user = require("./routes/userInfoRoute");
 const message = require("./routes/messageRoutes");
+
 require("dotenv").config();
 
 connectDB();
+
+const app = express();
+const server = http.createServer(app);
 
 app.use(express.json());
 app.use(
@@ -29,7 +34,9 @@ app.use("/api", user);
 app.use("/api", chat);
 app.use("/api", message);
 
+setupWebSocket(server);
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`server is running on port : ${PORT}`);
 });

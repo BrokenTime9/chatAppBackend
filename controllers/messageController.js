@@ -1,13 +1,15 @@
 const Message = require("../models/Message");
 const User = require("../models/User");
 const Chat = require("../models/Chat");
+const { notifyRecipient } = require("../utils/websocket");
 
 const message = async (req, res) => {
   const { content, chatId } = req.body;
   const owner = await req.user.userId;
+
   try {
     if (!content || !chatId || !owner) {
-      return res.status(400).send("content or chatId or owner not found");
+      res.status(400);
     }
 
     const newMessage = new Message({
@@ -17,10 +19,11 @@ const message = async (req, res) => {
     });
 
     await newMessage.save();
-    res.status(200).json({ msg: "new msg" });
+
+    res.status(201);
   } catch (err) {
     console.error(err);
-    res.status(500).send("server error");
+    res.status(500);
   }
 };
 
@@ -28,7 +31,7 @@ const getMessages = async (req, res) => {
   try {
     const { chatId } = req.params;
     if (!chatId) {
-      return res.status(400).send("chat id not found");
+      return res.status(401);
     }
 
     const messages = await Message.find({ chatId })
@@ -38,7 +41,7 @@ const getMessages = async (req, res) => {
     res.status(200).json(messages || [{ content: "no messges yet" }]);
   } catch (err) {
     console.error(err);
-    res.status(500).send("server error");
+    res.status(500);
   }
 };
 

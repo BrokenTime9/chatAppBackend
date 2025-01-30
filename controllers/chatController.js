@@ -19,9 +19,8 @@ const createChat = async (req, res) => {
     });
 
     await newChat.save();
-    console.log("created chat");
 
-    res.status(200).json({ msg: "chat saved" });
+    res.status(201).json({ msg: "chat saved" });
   } catch (err) {
     console.error(err);
     res.status(500).send(err);
@@ -45,4 +44,19 @@ const getChats = async (req, res) => {
   }
 };
 
-module.exports = { createChat, getChats };
+const getChat = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { chatId } = req.body;
+
+    const user = await User.findOne({ userId });
+    const chat = await User.findOne({ chatId });
+
+    res.status(200).json(user);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("server error");
+  }
+};
+
+module.exports = { createChat, getChat, getChats };
