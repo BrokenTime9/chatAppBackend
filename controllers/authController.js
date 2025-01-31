@@ -2,14 +2,16 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-const origin = req.get("Origin");
-
-let redirectUrl = "http://localhost:3000/dashboard";
-if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-  redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
-}
-
 const registerUser = async (req, res) => {
+  const origin = req.get("Origin");
+
+  const prod = true;
+
+  let redirectUrl = "http://localhost:3000/dashboard";
+  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
+    prod = false;
+    redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
+  }
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -38,7 +40,7 @@ const registerUser = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
+      sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
 
@@ -50,6 +52,14 @@ const registerUser = async (req, res) => {
 };
 
 const registerGoogleUser = async (req, res) => {
+  const origin = req.get("Origin");
+  const prod = true;
+
+  let redirectUrl = "http://localhost:3000/dashboard";
+  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
+    prod = false;
+    redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
+  }
   const { email, name, googleId } = req.user;
 
   try {
@@ -75,7 +85,7 @@ const registerGoogleUser = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
+      sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
 
@@ -87,6 +97,15 @@ const registerGoogleUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
+  console.log("got to login");
+  const origin = req.get("Origin");
+  const prod = true;
+
+  let redirectUrl = "http://localhost:3000/dashboard";
+  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
+    prod = false;
+    redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
+  }
   const { username, password } = req.body;
 
   try {
@@ -100,10 +119,11 @@ const loginUser = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "6h",
     });
+
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
+      sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
 
@@ -115,6 +135,14 @@ const loginUser = async (req, res) => {
 };
 
 const loginGoogleUser = async (req, res) => {
+  const origin = req.get("Origin");
+  const prod = true;
+
+  let redirectUrl = "http://localhost:3000/dashboard";
+  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
+    prod = false;
+    redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
+  }
   const { googleId, email } = req.user;
 
   try {
@@ -132,7 +160,7 @@ const loginGoogleUser = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
+      sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
 

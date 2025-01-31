@@ -1,13 +1,6 @@
 const { JsonWebTokenError } = require("jsonwebtoken");
 const axios = require("axios");
 
-const origin = req.get("Origin");
-
-let url = "http://localhost:5000";
-if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-  url = "https://chatappbackend-omj2.onrender.com";
-}
-
 const parseJwt = (token) => {
   try {
     const base64Url = token.split(".")[1];
@@ -21,7 +14,7 @@ const parseJwt = (token) => {
   }
 };
 
-const handleGoogleCallback = async (code, state) => {
+const handleGoogleCallback = async (code, state, url) => {
   const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 
   try {
@@ -41,14 +34,21 @@ const handleGoogleCallback = async (code, state) => {
 };
 
 const googleAuthMiddleware = async (req, res, next) => {
+  const origin = req.get("Origin");
+
+  let url = "http://localhost:5000";
+  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
+    url = "https://chatappbackend-omj2.onrender.com";
+  }
   try {
     const { state } = req.query;
     const { code } = req.query;
+
     if (!code) {
       return res.status(400).json({ msg: "Authorization code is required" });
     }
 
-    const tokenData = await handleGoogleCallback(code, state);
+    const tokenData = await handleGoogleCallback(code, state, url);
     if (!tokenData || !tokenData.id_token) {
       return res
         .status(400)
