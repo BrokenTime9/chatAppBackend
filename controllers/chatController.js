@@ -30,8 +30,10 @@ const createChat = async (req, res) => {
 // token
 // send chat id here remember that
 const getChats = async (req, res) => {
+  console.log("got to chats");
   try {
     const userId = req.user.userId;
+    console.log(userId);
 
     const chats = await Chat.find({
       $or: [{ owner1: userId }, { owner2: userId }],

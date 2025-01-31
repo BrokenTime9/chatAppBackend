@@ -2,7 +2,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const authenticateToken = async (req, res, next) => {
+  console.log("got to token retrieval");
   const token = await req.cookies.token;
+  console.log("token", token);
 
   if (!token) {
     return res.status(404);
