@@ -5,7 +5,7 @@ const User = require("../models/User");
 const registerUser = async (req, res) => {
   const origin = req.get("Origin");
 
-  const prod = true;
+  let prod = true;
 
   let redirectUrl = "http://localhost:3000/dashboard";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
@@ -53,7 +53,7 @@ const registerUser = async (req, res) => {
 
 const registerGoogleUser = async (req, res) => {
   const origin = req.get("Origin");
-  const prod = true;
+  let prod = true;
 
   let redirectUrl = "http://localhost:3000/dashboard";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
@@ -99,7 +99,7 @@ const registerGoogleUser = async (req, res) => {
 const loginUser = async (req, res) => {
   console.log("got to login");
   const origin = req.get("Origin");
-  const prod = true;
+  let prod = true;
 
   let redirectUrl = "http://localhost:3000/dashboard";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
@@ -136,7 +136,7 @@ const loginUser = async (req, res) => {
 
 const loginGoogleUser = async (req, res) => {
   const origin = req.get("Origin");
-  const prod = true;
+  let prod = true;
 
   let redirectUrl = "http://localhost:3000/dashboard";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
