@@ -6,11 +6,8 @@ const prod = process.env.NODE_ENV === "production";
 const registerUser = async (req, res) => {
   const origin = req.get("Origin");
 
-  let prod = true;
-
   let redirectUrl = "http://localhost:3000/dashboard";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    prod = false;
     redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
   }
   const { username, password } = req.body;
@@ -54,11 +51,9 @@ const registerUser = async (req, res) => {
 
 const registerGoogleUser = async (req, res) => {
   const origin = req.get("Origin");
-  let prod = true;
 
   let redirectUrl = "http://localhost:3000/dashboard";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    prod = false;
     redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
   }
   const { email, name, googleId } = req.user;
@@ -99,11 +94,9 @@ const registerGoogleUser = async (req, res) => {
 const loginUser = async (req, res) => {
   console.log("got to login");
   const origin = req.get("Origin");
-  let prod = true;
 
   let redirectUrl = "http://localhost:3000/dashboard";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    prod = false;
     redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
   }
   const { username, password } = req.body;
@@ -134,11 +127,9 @@ const loginUser = async (req, res) => {
 
 const loginGoogleUser = async (req, res) => {
   const origin = req.get("Origin");
-  let prod = true;
 
   let redirectUrl = "http://localhost:3000/dashboard";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    prod = false;
     redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
   }
   const { googleId, email } = req.user;

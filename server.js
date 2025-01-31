@@ -17,6 +17,7 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(express.json());
+app.set("trust proxy", 1);
 
 app.use(
   cors({
