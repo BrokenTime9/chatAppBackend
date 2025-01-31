@@ -1,6 +1,13 @@
 const { JsonWebTokenError } = require("jsonwebtoken");
 const axios = require("axios");
 
+const origin = req.get("Origin");
+
+let url = "http://localhost:5000";
+if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
+  url = "https://chatappbackend-omj2.onrender.com";
+}
+
 const parseJwt = (token) => {
   try {
     const base64Url = token.split(".")[1];
@@ -22,7 +29,7 @@ const handleGoogleCallback = async (code, state) => {
       code: code,
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: `http://localhost:5000/api/auth/google${state}`,
+      redirect_uri: `${url}/api/auth/google${state}`,
       grant_type: "authorization_code",
     });
 
