@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const prod = process.env.NODE_ENV === "production";
 
 const registerUser = async (req, res) => {
   const origin = req.get("Origin");
@@ -37,13 +38,13 @@ const registerUser = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "6h",
     });
+
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: prod,
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
-
     res.status(201).json({ redirectTo: redirectUrl });
   } catch (err) {
     console.error(err);
@@ -81,10 +82,9 @@ const registerGoogleUser = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "6h",
     });
-
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: prod,
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
@@ -121,11 +121,10 @@ const loginUser = async (req, res) => {
     });
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: prod,
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
-
     res.status(201).json({ redirectTo: redirectUrl });
   } catch (err) {
     console.error(err);
@@ -155,14 +154,12 @@ const loginGoogleUser = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "6h",
     });
-
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: prod,
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
-
     res.status(201).json({ redirectTo: redirectUrl });
   } catch (err) {
     console.error(err);
