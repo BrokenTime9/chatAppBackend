@@ -35,6 +35,7 @@ const handleGoogleCallback = async (code, state, url) => {
 };
 
 const googleAuthMiddleware = async (req, res, next) => {
+  console.log("got to google middleware");
   const origin = req.get("Origin");
 
   let url = "http://localhost:5000";
