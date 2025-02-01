@@ -71,7 +71,7 @@ const setupWebSocket = (server) => {
       });
 
       ws.on("close", () => {
-        console.log(`user ${user} disconnected from ${chatId} disconnected`);
+        console.log(`user ${userId} disconnected from ${chatId} disconnected`);
         clients[chatId] = clients[chatId].filter((client) => client !== ws);
         if (clients[chatId].length === 0) {
           delete clients[chatId];
