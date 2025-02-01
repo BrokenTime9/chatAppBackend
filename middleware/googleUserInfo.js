@@ -16,6 +16,7 @@ const parseJwt = (token) => {
 
 const handleGoogleCallback = async (code, state, url) => {
   const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+  console.log("url in googlecallback", url);
 
   try {
     const response = await axios.post(GOOGLE_TOKEN_URL, {
@@ -48,6 +49,7 @@ const googleAuthMiddleware = async (req, res, next) => {
       return res.status(400).json({ msg: "Authorization code is required" });
     }
 
+    console.log("url before googlecallback", url);
     const tokenData = await handleGoogleCallback(code, state, url);
     if (!tokenData || !tokenData.id_token) {
       return res
