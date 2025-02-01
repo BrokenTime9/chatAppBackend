@@ -62,14 +62,20 @@ const setupWebSocket = (server) => {
 
         if (clients[chatId] && clients[chatId].length > 0) {
           console.log("sending message");
-          clients[chatId][0].send(JSON.stringify(messageData));
+          clients[chatId][0].forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(JSON.stringify(messageData));
+            }
+          });
         }
       });
 
       ws.on("close", () => {
-        console.log("got in ws close");
-        console.log(`Chat ${chatId} disconnected`);
-        delete clients[chatId];
+        console.log(`user ${user} disconnected from ${chatId} disconnected`);
+        clients[chatId] = clients[chatId].filter((client) => client !== ws);
+        if (clients[chatId].length === 0) {
+          delete clients[chatId];
+        }
       });
     } catch (e) {
       console.error("Invalid token:", e);
