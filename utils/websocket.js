@@ -62,7 +62,7 @@ const setupWebSocket = (server) => {
 
         if (clients[chatId] && clients[chatId].length > 0) {
           console.log("sending message");
-          clients[chatId][0].forEach((client) => {
+          clients[chatId].forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
               client.send(JSON.stringify(messageData));
             }
