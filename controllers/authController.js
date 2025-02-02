@@ -9,7 +9,7 @@ let url = [
 ];
 
 //#2 to change
-const reUrl = url[0];
+const reUrl = url[1];
 
 const registerUser = async (req, res) => {
   const origin = req.get("Origin");
