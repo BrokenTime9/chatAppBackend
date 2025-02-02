@@ -16,9 +16,6 @@ const parseJwt = (token) => {
 
 const handleGoogleCallback = async (code, state, url) => {
   const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
-  console.log(state, "state");
-  console.log(code, "code");
-  console.log(url, "url");
 
   try {
     const response = await axios.post(
@@ -45,12 +42,11 @@ const handleGoogleCallback = async (code, state, url) => {
   }
 };
 const googleAuthMiddleware = async (req, res, next) => {
-  const origin = req.get("Origin");
+  let url = [
+    "http://localhost:5000",
+    "https://chatappbackend-omj2.onrender.com",
+  ];
 
-  let url = "http://localhost:5000";
-  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    url = "https://chatappbackend-omj2.onrender.com";
-  }
   try {
     const { state } = req.query;
     const { code } = req.query;
@@ -59,7 +55,8 @@ const googleAuthMiddleware = async (req, res, next) => {
       return res.status(400).json({ msg: "Authorization code is required" });
     }
 
-    const tokenData = await handleGoogleCallback(code, state, url);
+    //#1 to change
+    const tokenData = await handleGoogleCallback(code, state, url[1]);
     console.log(tokenData, "---token data");
     if (!tokenData || !tokenData.id_token) {
       return res
