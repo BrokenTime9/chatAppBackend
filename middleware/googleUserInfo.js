@@ -57,7 +57,6 @@ const googleAuthMiddleware = async (req, res, next) => {
 
     //#1 to change
     const tokenData = await handleGoogleCallback(code, state, url[1]);
-    console.log(tokenData, "---token data");
     if (!tokenData || !tokenData.id_token) {
       return res
         .status(400)
