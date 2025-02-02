@@ -16,6 +16,9 @@ const parseJwt = (token) => {
 
 const handleGoogleCallback = async (code, state, url) => {
   const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+  console.log(state, "state");
+  console.log(code, "code");
+  console.log(url, "url");
 
   try {
     const response = await axios.post(
