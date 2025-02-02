@@ -5,10 +5,13 @@ const userExtraction = async (req, res, next) => {
   const user = await req.body.owner2;
 
   if (!user) {
-    return res.status(401).json({ msg: "no user found" });
+    return res.status(404).json({ msg: "no user found" });
   }
   try {
     const userId = await User.findOne({ username: user });
+    if (!userId) {
+      return res.status(404).json({ msg: "username" });
+    }
     req.user = {
       owner1,
       owner2: userId._id,
@@ -16,7 +19,7 @@ const userExtraction = async (req, res, next) => {
     next();
   } catch (error) {
     console.error(error);
-    res.status(401).json({ msg: "error caught in userExtraction" });
+    res.status(500).json({ msg: "error caught in userExtraction" });
   }
 };
 

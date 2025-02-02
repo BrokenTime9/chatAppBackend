@@ -2,6 +2,7 @@ const WebSocket = require("ws");
 const cookie = require("cookie");
 const jwt = require("jsonwebtoken");
 const Chat = require("../models/Chat");
+const { refreshTokenHandler } = require("../controllers/authController");
 
 let clients = {};
 
@@ -9,8 +10,6 @@ const setupWebSocket = (server) => {
   const wss = new WebSocket.Server({ server });
 
   wss.on("connection", async (ws, req) => {
-    console.log("New WebSocket connection");
-
     if (!req.headers.cookie) {
       console.log("No cookie found");
       ws.close();
@@ -54,14 +53,11 @@ const setupWebSocket = (server) => {
         clients[chatId] = [];
       }
       clients[chatId].push(ws);
-      console.log(`User ${userId} connected to chat ${chatId} via WebSocket`);
 
       ws.on("message", (message) => {
         const messageData = JSON.parse(message);
-        console.log("message receiver", messageData);
 
         if (clients[chatId] && clients[chatId].length > 0) {
-          console.log("sending message");
           clients[chatId].forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
               client.send(JSON.stringify(messageData));
@@ -71,7 +67,6 @@ const setupWebSocket = (server) => {
       });
 
       ws.on("close", () => {
-        console.log(`user ${userId} disconnected from ${chatId} disconnected`);
         clients[chatId] = clients[chatId].filter((client) => client !== ws);
         if (clients[chatId].length === 0) {
           delete clients[chatId];

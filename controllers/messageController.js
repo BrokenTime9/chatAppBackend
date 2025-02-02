@@ -20,7 +20,7 @@ const message = async (req, res) => {
 
     await newMessage.save();
 
-    res.status(201);
+    res.sendStatus(201);
   } catch (err) {
     console.error(err);
     res.status(500);
@@ -29,9 +29,9 @@ const message = async (req, res) => {
 
 const getMessages = async (req, res) => {
   try {
-    const { chatId } = req.params;
+    const { chatId } = req.body;
     if (!chatId) {
-      return res.status(401);
+      return res.sendStatus(404);
     }
 
     const messages = await Message.find({ chatId })

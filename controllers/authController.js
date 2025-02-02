@@ -35,7 +35,6 @@ const registerUser = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "6h",
     });
-
     res.cookie("token", token, {
       httpOnly: true,
       secure: prod,
@@ -73,6 +72,7 @@ const registerGoogleUser = async (req, res) => {
     });
 
     await user.save();
+
     const payload = { userId: user.id };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "6h",
@@ -83,8 +83,7 @@ const registerGoogleUser = async (req, res) => {
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
-
-    res.status(201).json({ redirectTo: redirectUrl });
+    res.redirect(redirectUrl);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
@@ -92,7 +91,6 @@ const registerGoogleUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  console.log("got to login");
   const origin = req.get("Origin");
 
   let redirectUrl = "http://localhost:3000/dashboard";
@@ -112,12 +110,14 @@ const loginUser = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "6h",
     });
+
     res.cookie("token", token, {
       httpOnly: true,
       secure: prod,
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
+
     res.status(201).json({ redirectTo: redirectUrl });
   } catch (err) {
     console.error(err);
@@ -126,6 +126,7 @@ const loginUser = async (req, res) => {
 };
 
 const loginGoogleUser = async (req, res) => {
+  console.log("got to goofle ligin");
   const origin = req.get("Origin");
 
   let redirectUrl = "http://localhost:3000/dashboard";
@@ -151,11 +152,23 @@ const loginGoogleUser = async (req, res) => {
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
-    res.status(201).json({ redirectTo: redirectUrl });
+    res.redirect(redirectUrl);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
   }
+};
+
+const logout = async (req, res) => {
+  const origin = req.get("Origin");
+
+  let redirectUrl = "http://localhost:3000";
+  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
+    redirectUrl = "https://chat-app-zeta-roan.vercel.app";
+  }
+  res.clearCookie("token");
+
+  res.status(200).json({ redirectTo: redirectUrl });
 };
 
 module.exports = {
@@ -163,4 +176,5 @@ module.exports = {
   loginUser,
   loginGoogleUser,
   registerGoogleUser,
+  logout,
 };
