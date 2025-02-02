@@ -3,6 +3,14 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const prod = process.env.NODE_ENV === "production";
 
+let url = [
+  "http://localhost:3000/dashboard",
+  "https://chat-app-zeta-roan.vercel.app/dashboard",
+];
+
+//#2 to change
+const reUrl = url[1];
+
 const registerUser = async (req, res) => {
   const origin = req.get("Origin");
 
@@ -49,12 +57,6 @@ const registerUser = async (req, res) => {
 };
 
 const registerGoogleUser = async (req, res) => {
-  const origin = req.get("Origin");
-
-  let redirectUrl = "http://localhost:3000/dashboard";
-  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
-  }
   const { email, name, googleId } = req.user;
 
   try {
@@ -83,7 +85,7 @@ const registerGoogleUser = async (req, res) => {
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
-    res.redirect(redirectUrl);
+    res.redirect(reUrl);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
@@ -126,13 +128,6 @@ const loginUser = async (req, res) => {
 };
 
 const loginGoogleUser = async (req, res) => {
-  console.log("got to goofle ligin");
-  const origin = req.get("Origin");
-
-  let redirectUrl = "http://localhost:3000/dashboard";
-  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
-  }
   const { googleId, email } = req.user;
 
   try {
@@ -152,7 +147,7 @@ const loginGoogleUser = async (req, res) => {
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
-    res.redirect(redirectUrl);
+    res.redirect(reUrl);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
