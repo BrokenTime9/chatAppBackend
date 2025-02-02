@@ -1,4 +1,5 @@
 const axios = require("axios");
+const qs = require("querystring");
 
 const parseJwt = (token) => {
   try {
@@ -17,21 +18,29 @@ const handleGoogleCallback = async (code, state, url) => {
   const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 
   try {
-    const response = await axios.post(GOOGLE_TOKEN_URL, {
-      code: code,
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: `${url}/api/auth/google${state}`,
-      grant_type: "authorization_code",
-    });
+    const response = await axios.post(
+      GOOGLE_TOKEN_URL,
+      qs.stringify({
+        code: code,
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: `${url}/api/auth/google${state}`,
+        grant_type: "authorization_code",
+      }),
+      {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      },
+    );
 
     return response.data;
   } catch (error) {
-    console.error("Error exchanging code for token:", error);
+    console.error(
+      "Error exchanging code for token:",
+      error.response?.data || error.message,
+    );
     return null;
   }
 };
-
 const googleAuthMiddleware = async (req, res, next) => {
   const origin = req.get("Origin");
 
@@ -48,6 +57,7 @@ const googleAuthMiddleware = async (req, res, next) => {
     }
 
     const tokenData = await handleGoogleCallback(code, state, url);
+    console.log(tokenData, "---token data");
     if (!tokenData || !tokenData.id_token) {
       return res
         .status(400)
