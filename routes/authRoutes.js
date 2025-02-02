@@ -8,6 +8,7 @@ const {
   registerGoogleUser,
   loginGoogleUser,
   logout,
+  checkLogin,
 } = require("../controllers/authController.js");
 
 router.post("/register", registerUser);
@@ -18,6 +19,7 @@ router.get("/googleregister", googleAuthMiddleware, registerGoogleUser);
 
 router.get("/googlelogin", googleAuthMiddleware, loginGoogleUser);
 
-router.get("/logout", logout);
+router.post("/logout", logout);
+router.post("/checkLogin", checkLogin);
 
 module.exports = router;

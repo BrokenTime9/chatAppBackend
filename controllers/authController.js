@@ -166,9 +166,32 @@ const logout = async (req, res) => {
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
     redirectUrl = "https://chat-app-zeta-roan.vercel.app";
   }
-  res.clearCookie("token");
+  try {
+    await res.clearCookie("token", {
+      httpOnly: true,
+      secure: prod,
+      sameSite: prod ? "None" : "Lax",
+    });
 
-  res.status(200).json({ redirectTo: redirectUrl });
+    res.status(200).json({ redirectTo: redirectUrl });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const checkLogin = async (req, res) => {
+  const origin = req.get("Origin");
+
+  let redirectUrl = "http://localhost:3000";
+  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
+    redirectUrl = "https://chat-app-zeta-roan.vercel.app";
+  }
+  try {
+    const token = req.cookies.token;
+    if (!token) return res.status(200).json({ redirectTo: redirectUrl });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 module.exports = {
@@ -177,4 +200,5 @@ module.exports = {
   loginGoogleUser,
   registerGoogleUser,
   logout,
+  checkLogin,
 };
