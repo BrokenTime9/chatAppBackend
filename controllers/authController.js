@@ -9,7 +9,7 @@ let url = [
 ];
 
 //#2 to change
-const reUrl = url[1];
+const reUrl = url[0];
 
 const registerUser = async (req, res) => {
   const origin = req.get("Origin");
@@ -128,6 +128,7 @@ const loginUser = async (req, res) => {
 };
 
 const loginGoogleUser = async (req, res) => {
+  console.log("got to google login");
   const { googleId, email } = req.user;
 
   try {
