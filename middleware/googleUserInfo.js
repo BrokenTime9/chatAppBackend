@@ -1,6 +1,13 @@
 const axios = require("axios");
 const qs = require("querystring");
 
+let url = [
+  "http://localhost:3000/loading",
+  "https://chat-app-zeta-roan.vercel.app/loading",
+];
+
+const reUri = url[1];
+
 const parseJwt = (token) => {
   try {
     const base64Url = token.split(".")[1];
@@ -24,7 +31,7 @@ const handleGoogleCallback = async (code, state) => {
         code: code,
         client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: `http://localhost:3000/loading`,
+        redirect_uri: `${reUri}`,
         grant_type: "authorization_code",
       }),
       {
