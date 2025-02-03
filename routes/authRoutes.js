@@ -15,9 +15,9 @@ router.post("/register", registerUser);
 
 router.post("/login", loginUser);
 
-router.get("/googleregister", googleAuthMiddleware, registerGoogleUser);
+router.post("/googleregister", googleAuthMiddleware, registerGoogleUser);
 
-router.get("/googlelogin", googleAuthMiddleware, loginGoogleUser);
+router.post("/googlelogin", googleAuthMiddleware, loginGoogleUser);
 
 router.post("/logout", logout);
 router.post("/checkLogin", checkLogin);

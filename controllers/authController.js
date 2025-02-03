@@ -8,7 +8,7 @@ let url = [
   "https://chat-app-zeta-roan.vercel.app/dashboard",
 ];
 
-//#2 to change
+//#1 to change
 const reUrl = url[1];
 
 const registerUser = async (req, res) => {
@@ -85,7 +85,7 @@ const registerGoogleUser = async (req, res) => {
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
-    res.redirect(reUrl);
+    res.status(200).json({ redirectTo: reUrl });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
@@ -128,7 +128,6 @@ const loginUser = async (req, res) => {
 };
 
 const loginGoogleUser = async (req, res) => {
-  console.log("got to google login");
   const { googleId, email } = req.user;
 
   try {
@@ -148,7 +147,7 @@ const loginGoogleUser = async (req, res) => {
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
-    res.redirect(reUrl);
+    res.status(200).json({ redirectTo: reUrl });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");

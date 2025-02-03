@@ -14,7 +14,7 @@ const parseJwt = (token) => {
   }
 };
 
-const handleGoogleCallback = async (code, state, url) => {
+const handleGoogleCallback = async (code, state) => {
   const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 
   try {
@@ -24,7 +24,7 @@ const handleGoogleCallback = async (code, state, url) => {
         code: code,
         client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: `${url}/api/auth/google${state}`,
+        redirect_uri: `http://localhost:3000/loading`,
         grant_type: "authorization_code",
       }),
       {
@@ -48,15 +48,14 @@ const googleAuthMiddleware = async (req, res, next) => {
   ];
 
   try {
-    const { state } = req.query;
-    const { code } = req.query;
+    const { state } = req.body;
+    const { code } = req.body;
 
     if (!code) {
       return res.status(400).json({ msg: "Authorization code is required" });
     }
 
-    //#1 to change
-    const tokenData = await handleGoogleCallback(code, state, url[1]);
+    const tokenData = await handleGoogleCallback(code, state);
     if (!tokenData || !tokenData.id_token) {
       return res
         .status(400)
