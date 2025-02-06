@@ -55,43 +55,6 @@ const registerUser = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
-
-const registerGoogleUser = async (req, res) => {
-  const { email, name, googleId } = req.user;
-
-  try {
-    let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ msg: "User already exists" });
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedId = await bcrypt.hash(googleId, salt);
-
-    user = new User({
-      username: `${name}-${Date.now()}`,
-      email,
-      googleId: hashedId,
-      loginType: "google",
-    });
-
-    await user.save();
-
-    const payload = { userId: user.id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "6h",
-    });
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: prod,
-      sameSite: prod ? "None" : "Lax",
-      maxAge: 6 * 60 * 60 * 1000,
-    });
-    res.status(200).json({ redirectTo: reUrl });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
-  }
-};
-
 const loginUser = async (req, res) => {
   const origin = req.get("Origin");
 
@@ -128,11 +91,24 @@ const loginUser = async (req, res) => {
 };
 
 const loginGoogleUser = async (req, res) => {
-  const { googleId, email } = req.user;
+  const { googleId, email, name } = req.user;
 
   try {
     let user = await User.findOne({ email });
-    if (!user) return res.status(400).send({ msg: "User does not exist" });
+    if (!user) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedId = await bcrypt.hash(googleId, salt);
+
+      user = new User({
+        username: `${name}-${Date.now()}`,
+        email,
+        googleId: hashedId,
+        loginType: "google",
+      });
+
+      await user.save();
+    }
+    user = await User.findOne({ email });
 
     const isMatch = await bcrypt.compare(googleId, user.googleId);
     if (!isMatch) return res.status(400).send({ msg: "Google Id incorrect" });
@@ -193,7 +169,6 @@ module.exports = {
   registerUser,
   loginUser,
   loginGoogleUser,
-  registerGoogleUser,
   logout,
   checkLogin,
 };

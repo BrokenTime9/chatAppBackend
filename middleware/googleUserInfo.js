@@ -6,6 +6,7 @@ let url = [
   "https://chat-app-zeta-roan.vercel.app/loading",
 ];
 
+//#2 to change
 const reUri = url[1];
 
 const parseJwt = (token) => {
@@ -21,7 +22,7 @@ const parseJwt = (token) => {
   }
 };
 
-const handleGoogleCallback = async (code, state) => {
+const handleGoogleCallback = async (code) => {
   const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 
   try {
@@ -55,14 +56,13 @@ const googleAuthMiddleware = async (req, res, next) => {
   ];
 
   try {
-    const { state } = req.body;
     const { code } = req.body;
 
     if (!code) {
       return res.status(400).json({ msg: "Authorization code is required" });
     }
 
-    const tokenData = await handleGoogleCallback(code, state);
+    const tokenData = await handleGoogleCallback(code);
     if (!tokenData || !tokenData.id_token) {
       return res
         .status(400)
