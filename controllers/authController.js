@@ -3,21 +3,12 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const prod = process.env.NODE_ENV === "production";
 
-let url = [
-  "http://localhost:3000/dashboard",
-  "https://chat-app-zeta-roan.vercel.app/dashboard",
-];
+let url = ["http://localhost:3000/", "https://chat-app-zeta-roan.vercel.app/"];
 
 //#1 to change
 const reUrl = url[1];
 
 const registerUser = async (req, res) => {
-  const origin = req.get("Origin");
-
-  let redirectUrl = "http://localhost:3000/dashboard";
-  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
-  }
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -49,19 +40,13 @@ const registerUser = async (req, res) => {
       sameSite: prod ? "None" : "Lax",
       maxAge: 6 * 60 * 60 * 1000,
     });
-    res.status(201).json({ redirectTo: redirectUrl });
+    res.status(201).json({ redirectTo: reUrl });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
   }
 };
 const loginUser = async (req, res) => {
-  const origin = req.get("Origin");
-
-  let redirectUrl = "http://localhost:3000/dashboard";
-  if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    redirectUrl = "https://chat-app-zeta-roan.vercel.app/dashboard";
-  }
   const { username, password } = req.body;
 
   try {
@@ -83,7 +68,7 @@ const loginUser = async (req, res) => {
       maxAge: 6 * 60 * 60 * 1000,
     });
 
-    res.status(201).json({ redirectTo: redirectUrl });
+    res.status(201).json({ redirectTo: reUrl });
   } catch (err) {
     console.error(err);
     res.status(500).send("server error");
@@ -133,9 +118,9 @@ const loginGoogleUser = async (req, res) => {
 const logout = async (req, res) => {
   const origin = req.get("Origin");
 
-  let redirectUrl = "http://localhost:3000";
+  let redirectUrl = "http://localhost:3000/login";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    redirectUrl = "https://chat-app-zeta-roan.vercel.app";
+    redirectUrl = "https://chat-app-zeta-roan.vercel.app/login";
   }
   try {
     await res.clearCookie("token", {
@@ -153,9 +138,9 @@ const logout = async (req, res) => {
 const checkLogin = async (req, res) => {
   const origin = req.get("Origin");
 
-  let redirectUrl = "http://localhost:3000";
+  let redirectUrl = "http://localhost:3000/login";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    redirectUrl = "https://chat-app-zeta-roan.vercel.app";
+    redirectUrl = "https://chat-app-zeta-roan.vercel.app/login";
   }
   try {
     const token = req.cookies.token;
