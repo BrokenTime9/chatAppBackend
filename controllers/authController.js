@@ -118,9 +118,9 @@ const loginGoogleUser = async (req, res) => {
 const logout = async (req, res) => {
   const origin = req.get("Origin");
 
-  let redirectUrl = "http://localhost:3000/login";
+  let redirectUrl = "http://localhost:3000/signin";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    redirectUrl = "https://chat-app-zeta-roan.vercel.app/login";
+    redirectUrl = "https://chat-app-zeta-roan.vercel.app/signin";
   }
   try {
     await res.clearCookie("token", {
@@ -138,15 +138,15 @@ const logout = async (req, res) => {
 const checkLogin = async (req, res) => {
   const origin = req.get("Origin");
 
-  let redirectUrl = "http://localhost:3000/login";
+  let redirectUrl = "http://localhost:3000/signin";
   if (origin && origin.includes("chat-app-zeta-roan.vercel.app")) {
-    redirectUrl = "https://chat-app-zeta-roan.vercel.app/login";
+    redirectUrl = "https://chat-app-zeta-roan.vercel.app/signin";
   }
   try {
     const token = req.cookies.token;
     if (!token) return res.status(200).json({ redirectTo: redirectUrl });
   } catch (e) {
-    console.error(e);
+    return res.status(401).json({ redirectTo: redirectUrl });
   }
 };
 
