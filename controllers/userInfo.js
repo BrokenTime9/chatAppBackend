@@ -33,4 +33,17 @@ const userInfo = async (req, res) => {
   }
 };
 
-module.exports = { userInfo };
+const getUsers = async (req, res) => {
+  try {
+    const { username } = req.query;
+    const users = await User.find({
+      username: { $regex: username, $options: "i" },
+    });
+
+    res.json(users);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+module.exports = { userInfo, getUsers };
