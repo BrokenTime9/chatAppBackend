@@ -4,6 +4,6 @@ const { userInfo, getUsers } = require("../controllers/userInfo");
 const { authenticateToken } = require("../middleware/tokenRetrieval");
 
 router.post("/user", authenticateToken, userInfo);
-router.get("/users", getUsers);
+router.post("/users", authenticateToken, getUsers);
 
 module.exports = router;
